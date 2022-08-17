@@ -39,6 +39,54 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@app.route('/people', methods=['GET'])
+def getPeople():
+    return jsonify({
+        "mensaje": "Todos los Personajes",
+        "people": []
+    })
+
+@app.route('/people/<int:id>', methods=['GET'])
+def dinamycPeople(id):
+    return jsonify({
+        "id": id,
+        "mensaje": "Personajes dinamico"
+    })
+
+@app.route('/planets', methods=['GET'])
+def getPeople():
+    return jsonify({
+        "mensaje": "Todos los Planets",
+        "people": []
+    })
+
+@app.route('/planets/<int:id>', methods=['GET'])
+def dinamycPeople(id):
+    return jsonify({
+        "id": id,
+        "mensaje": "Planetas dinamico"
+    })
+
+@app.route('/users', methods=['GET'])
+def getUsers():
+    return jsonify({
+        "mensaje": "Get a list of all the blog post users"
+        
+    })
+
+@app.route('/users/favorites', methods=['GET'])
+def getUsersFav():
+    return jsonify({
+        "mensaje": "Get all the favorites that belong to the current user"
+    })
+
+@app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
+def postFavPlanet(planet_id):
+    return jsonify({
+        "mensaje": "Add a new favorite planet to the current user with the planet id = planet_id"
+    })
+
+
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
