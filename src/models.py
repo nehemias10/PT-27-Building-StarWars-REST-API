@@ -3,19 +3,23 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
+    __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.id
 
     def serialize(self):
         return {
             "id": self.id,
             "email": self.email,
+            "name": self.name,
+            
             # do not serialize the password, its a security breach
         }
 
@@ -61,7 +65,7 @@ class FavPeople(db.Model):
     __tablename__ = "favPeople"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    people_id = db.Column(db.Integer, db.ForeignKey('people.uid'))
+    people_uid = db.Column(db.Integer, db.ForeignKey('people.uid'))
     user = db.relationship(User)
     people = db.relationship(People)
 
@@ -69,24 +73,23 @@ class FavPeople(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "people_id": self.people_id,
+            "people_uid": self.people_uid,
         }
 
-class FavPlanets(db.Model):
-    __tablename__ = "favPlanets"
+class FavPlanet(db.Model):
+    __tablename__ = "favPlanet"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    planet_id = db.Column(db.Integer, db.ForeignKey('planets.uid'))
+    planet_uid = db.Column(db.Integer, db.ForeignKey('planets.uid'))
     user = db.relationship(User)
-    planets = db.relationship(Planets)
+    planet = db.relationship(Planets)
 
     def serialize(self):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "planet_id": self.planet_id,
+            "planet_uid": self.planet_uid,
         }
-
 
 
 
