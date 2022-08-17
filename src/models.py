@@ -22,11 +22,11 @@ class User(db.Model):
 class People(db.Model):
     __tablename__ = 'people'
 
-    uid = db.Column(db.integer, primary_key=True)
-    name = db.Column(db.string(120), unique=False, nullable=False)
-    gender = db.Column(db.string(120), unique=False, nullable=True)
-    height = db.Column(db.integer, unique=False, nullable=True)
-    hair = db.Column(db.string(120), unique=False, nullable=True)
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=False, nullable=False)
+    gender = db.Column(db.String(120), unique=False, nullable=True)
+    height = db.Column(db.Integer, unique=False, nullable=True)
+    hair = db.Column(db.String(120), unique=False, nullable=True)
 
     def __repr__(self):
         return '<People %r>' %self.name
@@ -43,10 +43,10 @@ class People(db.Model):
 class Planets(db.Model):
     __tablename__ = "planets"
 
-    uid = db.Column(db.integer, primary_key=True)
-    name = db.Column(db.string(120), unique=False, nullable=False)
-    population = db.Column(db.integer, unique=False, nullable=False)
-    climate = db.Column(db.string(120), unique=False, nullable=True)
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=False, nullable=False)
+    population = db.Column(db.Integer, unique=False, nullable=False)
+    climate = db.Column(db.String(120), unique=False, nullable=True)
 
     def serialize(self):
         return {
@@ -59,9 +59,9 @@ class Planets(db.Model):
 
 class FavPeople(db.Model):
     __tablename__ = "favPeople"
-    id = db.Column(db.integer, primary_key=True)
-    user_id = db.Column(db.integer, db.ForeingKey('user.id'))
-    people_id = db.integer(db.integer, db.ForeingKey('people.id'))
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    people_id = db.Column(db.Integer, db.ForeignKey('people.uid'))
     user = db.relationship(User)
     people = db.relationship(People)
 
@@ -72,11 +72,11 @@ class FavPeople(db.Model):
             "people_id": self.people_id,
         }
 
-        class FavPlanets(db.Model):
+class FavPlanets(db.Model):
     __tablename__ = "favPlanets"
-    id = db.Column(db.integer, primary_key=True)
-    user_id = db.Column(db.integer, db.ForeingKey('user.id'))
-    planet_id = db.integer(db.integer, db.ForeingKey('planets.id'))
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.uid'))
     user = db.relationship(User)
     planets = db.relationship(Planets)
 

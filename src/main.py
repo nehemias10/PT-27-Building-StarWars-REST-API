@@ -54,14 +54,14 @@ def dinamycPeople(id):
     })
 
 @app.route('/planets', methods=['GET'])
-def getPeople():
+def getPlanets():
     return jsonify({
         "mensaje": "Todos los Planets",
         "people": []
     })
 
 @app.route('/planets/<int:id>', methods=['GET'])
-def dinamycPeople(id):
+def dinamycPlanets(id):
     return jsonify({
         "id": id,
         "mensaje": "Planetas dinamico"
