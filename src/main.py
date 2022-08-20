@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, People
+from models import db, User, People, FavPeople, Planets, FavPlanet
 #from models import Person
 
 app = Flask(__name__)
@@ -31,13 +31,16 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/user', methods=['GET'])
-def handle_hello():
+def get_User():
+    all_user = User.query.all()
+    serializados = list(map(lambda user: user.serialize(),all_user))
+    print(all_user)
+    return jsonify({
+        "mensaje": "Todos los Usuarios",
+        "users": serializados
+    }), 200
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
 
-    return jsonify(response_body), 200
 
 @app.route('/people', methods=['GET'])
 def getPeople():
@@ -69,47 +72,63 @@ def dinamycPeople(idpeople):
 
 @app.route('/planets', methods=['GET'])
 def getPlanets():
-    return jsonify({
-        "mensaje": "Todos los Planets",
-        "people": []
-    })
+    all_planets = Planets.query.all()
+    serializados = list( map( lambda planets: planets.serialize(), all_planets))
+    print(all_planets)
 
+    return jsonify({
+        "mensaje": "Todos los Planetas",
+        "planets": serializados
+    }), 200
 @app.route('/planets/<int:idplanets>', methods=['GET'])
-def dinamycPlanets(id):
-    return jsonify({
-        "id": id,
-        "mensaje": "Planetas dinamico"
-    })
-
-@app.route('/users', methods=['GET'])
-def getUsers():
-    return jsonify({
-        "mensaje": "Get a list of all the blog post users"
+def dinamycPlanets(idplanets):
+    one = Planets.query.filter_by(uid=idplanets).first()
+    if(one):
+        return jsonify({
+            "id": idplanets,
+            "planets": one.serialize()
+        }), 200
         
-    })
+    else:
+        return jsonify({
+                "id": idplanets,
+                "planets": "not found!"
+        }), 404
 
-@app.route('/users/favorites', methods=['GET'])
-def getUsersFav():
-    return jsonify({
-        "mensaje": "Get all the favorites that belong to the current user"
-    })
+
+
+
 
 @app.route("/favorite/people/<int:people_id>", methods=['POST'])
 def postPeopleFav(people_id):
     body = request.get_json() #recibir datos del usuario
     #people_id = 4
     #email = freddyloboq@gmail.com
-    newFav = FavPeople(user=body['email'], people= people_id)
+    newFav = FavPeople(user=body['email'], people = people_id)
     db.session.add(newFav)
     db.session.commit()
     return "nuevo favorito agregado"
-    
 
 @app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
 def postFavPlanet(planet_id):
     return jsonify({
         "mensaje": "Add a new favorite planet to the current user with the planet id = planet_id"
     })
+
+@app.route("/favorite/people/<int:position>", methods=['DELETE'])
+def deletePeopleFav(position):
+    FavPeople.query.filter(FavPeople.id == position).delete()
+    db.session.commit()
+    return "favorito Eliminado"
+
+@app.route("/favorite/planets/<int:position>", methods=['DELETE'])
+def deletePlanetsFav(position):
+    FavPlanet.query.filter(FavPlanet.id == position).delete()
+    db.session.commit()
+    return "favorito Eliminado"
+    
+
+
 
 
 # this only runs if `$ python src/main.py` is executed
