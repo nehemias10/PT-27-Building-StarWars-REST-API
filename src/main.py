@@ -111,9 +111,13 @@ def postPeopleFav(people_id):
 
 @app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
 def postFavPlanet(planet_id):
-    return jsonify({
-        "mensaje": "Add a new favorite planet to the current user with the planet id = planet_id"
-    })
+    body = request.get_json() #recibir datos del usuario
+    one = Planets.query.get(planet_id)
+    oneSerializado = one.serialize()
+    newFav = FavPeople(user=body['email'], planets=oneSerializado["name"])
+    db.session.add(newFav)
+    db.session.commit()
+    return "nuevo favorito agregado"
 
 @app.route("/favorite/people/<int:position>", methods=['DELETE'])
 def deletePeopleFav(position):
